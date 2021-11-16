@@ -59,7 +59,7 @@ class DataManager:
 
         elif norm_method == 'z-score-shifted':
             data = (data - data.mean()) / data.std()
-            data = data + abs(data.min())
+            data += abs(data.min())
 
         return dates_col.join(data)
 
