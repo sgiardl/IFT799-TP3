@@ -6,11 +6,16 @@ Olivier Lefebvre
 Simon Giard-Leroux
 """
 
-from src.dataframes import load_data, split_data
+from src.DataManager import DataManager
 
 if __name__ == '__main__':
-    data = load_data('data/res_2000.csv')
 
-    data_split = split_data(data, 21)
+    data_manager = DataManager(file_path='data/res_2000.csv',
+                               date_start='2006-01-01',
+                               series_length=1260,
+                               n_series=100,
+                               norm_method='z-score',
+                               window_size=21,
+                               jump_size=10)
 
-    print(data_split)
+    print('hi')
