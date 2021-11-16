@@ -14,7 +14,7 @@ if __name__ == '__main__':
                                date_start='2006-01-01',
                                series_length=1260,
                                n_series=100,
-                               norm_method='z-score',
+                               norm_method='z-score-shifted',
                                window_size=21,
                                jump_size=10)
 

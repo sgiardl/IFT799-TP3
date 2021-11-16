@@ -20,7 +20,7 @@ class DataManager:
                  norm_method: str,
                  window_size: int,
                  jump_size: int) -> None:
-        norm_methods = ['none', 'min-max', 'z-score']
+        norm_methods = ['none', 'min-max', 'z-score', 'z-score-shifted']
 
         if norm_method not in norm_methods:
             raise ValueError(f'Wrong normalization method, valid choices are: {norm_methods}')
@@ -56,6 +56,10 @@ class DataManager:
 
         elif norm_method == 'z-score':
             data = (data - data.mean()) / data.std()
+
+        elif norm_method == 'z-score-shifted':
+            data = (data - data.mean()) / data.std()
+            data = data + abs(data.min())
 
         return dates_col.join(data)
 
