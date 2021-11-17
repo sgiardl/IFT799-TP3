@@ -7,7 +7,6 @@ Simon Giard-Leroux
 """
 
 import pandas as pd
-import numpy as np
 from math import ceil
 
 
@@ -31,11 +30,11 @@ class DataManager:
         except FileNotFoundError:
             raise FileNotFoundError(f"Please download the dataset and save it as '{file_path}' to use this script")
 
-        data = self.filter(data, date_start, series_length, n_series)
-        data = self.normalize(data, norm_method)
-        data = self.split(data, window_size, jump_size)
+        self.data_filtered = self.filter(data, date_start, series_length, n_series)
+        self.data_split = self.split(self.data_filtered, window_size, jump_size)
 
-        self.data = data
+        data = self.normalize(self.data_filtered, norm_method)
+        self.data_split_norm = self.split(data, window_size, jump_size)
 
     @staticmethod
     def filter(df: pd.DataFrame,
@@ -69,11 +68,6 @@ class DataManager:
               jump_size: int) -> pd.DataFrame:
         data_list = []
 
-        # if overlap_size == 0:
-        #     for i in range(ceil(len(df) / window_size)):
-        #         data_list.append(df[i * window_size:(i + 1) * window_size])
-
-        # else:
         for i in range(ceil(len(df) / jump_size)):
             data_list.append(df[i * jump_size:i * jump_size + window_size])
 

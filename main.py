@@ -7,9 +7,9 @@ Simon Giard-Leroux
 """
 
 from src.DataManager import DataManager
+from src.PlottingManager import PlottingManager
 
 if __name__ == '__main__':
-
     data_manager = DataManager(file_path='data/res_2000.csv',
                                date_start='2006-01-01',
                                series_length=1260,
@@ -18,4 +18,5 @@ if __name__ == '__main__':
                                window_size=21,
                                jump_size=10)
 
-    print('hi')
+    plotting_manager = PlottingManager(data_manager=data_manager)
+    plotting_manager.plot_time_series()
