@@ -14,13 +14,14 @@ from src.DataManager import DataManager
 
 class PlottingManager:
     def __init__(self, *,
-                 data_manager: DataManager) -> None:
+                 data_manager: DataManager,
+                 y_top_margin: float = 0.05) -> None:
         self.data_manager = data_manager
 
         self.date_min = self.data_manager.data['x'].min()
         self.date_max = self.data_manager.data['x'].max()
 
-        self.y_top_margin = 0.05
+        self.y_top_margin = y_top_margin
 
     def plot_full_time_series(self) -> None:
         df_dict = {
@@ -48,7 +49,7 @@ class PlottingManager:
         plt.tight_layout()
         plt.show()
 
-    def plot_windows(self,
+    def plot_windows(self, *,
                      series_name: str) -> None:
         plt.clf()
 
