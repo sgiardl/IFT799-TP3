@@ -33,11 +33,17 @@ class DataManager:
         data['x'] = pd.to_datetime(data['x'])
 
         self.data = self.filter(data, date_start, series_length, n_series)
+        self.data_split = self.split(self.data, window_size, jump_size)
 
-        self.data_norm = self.normalize(self.data, norm_method)
+        # Normalized independently for each window
+        self.data_split_norm = {}
 
-        # self.data_split = self.split(self.data, window_size, jump_size)
-        self.data_norm_split = self.split(self.data_norm, window_size, jump_size)
+        for window_start, df in self.data_split.items():
+            self.data_split_norm[window_start] = self.normalize(df, norm_method)
+
+        # Normalized with regards to the full data
+        # self.data_norm = self.normalize(self.data, norm_method)
+        # self.data_norm_split = self.split(self.data_norm, window_size, jump_size)
 
     @staticmethod
     def filter(df: pd.DataFrame,

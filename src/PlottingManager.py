@@ -26,7 +26,7 @@ class PlottingManager:
     def plot_full_time_series(self) -> None:
         df_dict = {
             'Value (raw)': self.data_manager.data,
-            'Value (normalized)': self.data_manager.data_norm
+            # 'Value (normalized)': self.data_manager.data_norm
         }
 
         for xlabel, df in df_dict.items():
@@ -55,19 +55,23 @@ class PlottingManager:
 
         fig, ax = plt.subplots()
 
-        for df in self.data_manager.data_norm_split.values():
+        val_max = 0
+
+        for df in self.data_manager.data_split_norm.values():
             df.plot(ax=ax,
                     x='x',
                     y=series_name)
+
+            if df[series_name].max() > val_max:
+                val_max = df[series_name].max()
 
         legend = ax.get_legend()
         legend.remove()
 
         plt.xlabel('Time')
-        plt.ylabel(f'Series: {series_name}: Value (normalized)')
+        plt.ylabel(f'Series: {series_name}, Value (normalized)')
         plt.xlim((self.date_min, self.date_max))
-        plt.ylim((0, (1 + self.y_top_margin) *
-                 self.data_manager.data_norm[series_name].max()))
+        plt.ylim((0, (1 + self.y_top_margin) * val_max))
 
         plt.tight_layout()
         plt.show()
@@ -78,7 +82,7 @@ class PlottingManager:
 
         fig, ax = plt.subplots()
 
-        df = self.data_manager.data_norm_split[window_start]
+        df = self.data_manager.data_split_norm[window_start]
 
         for series in df.columns[1:]:
             df.plot(ax=ax,
@@ -89,7 +93,7 @@ class PlottingManager:
         legend.remove()
 
         plt.xlabel('Time')
-        plt.ylabel(f'Window Start: {window_start}: Value (normalized)')
+        plt.ylabel(f'Window Start: {window_start}, Value (normalized)')
         plt.xlim((df['x'].min(), df['x'].max()))
         plt.ylim((0, (1 + self.y_top_margin) *
                  df[df.columns[1:]].max().max()))
