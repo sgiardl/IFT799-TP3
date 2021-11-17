@@ -19,4 +19,5 @@ if __name__ == '__main__':
                                jump_size=10)
 
     plotting_manager = PlottingManager(data_manager=data_manager)
+
     plotting_manager.plot_time_series()

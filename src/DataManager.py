@@ -30,11 +30,14 @@ class DataManager:
         except FileNotFoundError:
             raise FileNotFoundError(f"Please download the dataset and save it as '{file_path}' to use this script")
 
-        self.data_filtered = self.filter(data, date_start, series_length, n_series)
-        self.data_split = self.split(self.data_filtered, window_size, jump_size)
+        data['x'] = pd.to_datetime(data['x'])
 
-        data = self.normalize(self.data_filtered, norm_method)
-        self.data_split_norm = self.split(data, window_size, jump_size)
+        self.data = self.filter(data, date_start, series_length, n_series)
+
+        self.data_norm = self.normalize(self.data, norm_method)
+
+        self.data_split = self.split(self.data, window_size, jump_size)
+        self.data_split_norm = self.split(self.data_norm, window_size, jump_size)
 
     @staticmethod
     def filter(df: pd.DataFrame,
