@@ -69,9 +69,11 @@ class DataManager:
     def split(df: pd.DataFrame,
               window_size: int,
               jump_size: int) -> pd.DataFrame:
-        data_list = []
+        data_dict = {}
 
         for i in range(ceil(len(df) / jump_size)):
-            data_list.append(df[i * jump_size:i * jump_size + window_size])
+            index = i * jump_size
+            data_dict[df.iloc[index]['x'].strftime('%Y-%m-%d')] = \
+                df[index: index + window_size]
 
-        return data_list
+        return data_dict

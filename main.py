@@ -21,4 +21,5 @@ if __name__ == '__main__':
     plotting_manager = PlottingManager(data_manager=data_manager)
 
     plotting_manager.plot_full_time_series()
-    plotting_manager.plot_windows(series_name='FPX1')
+    plotting_manager.plot_all_windows_for_series(series_name='FPX1')
+    plotting_manager.plot_all_series_for_window(window_start='2008-04-03')

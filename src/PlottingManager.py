@@ -49,13 +49,13 @@ class PlottingManager:
         plt.tight_layout()
         plt.show()
 
-    def plot_windows(self, *,
-                     series_name: str) -> None:
+    def plot_all_windows_for_series(self, *,
+                                    series_name: str) -> None:
         plt.clf()
 
         fig, ax = plt.subplots()
 
-        for df in self.data_manager.data_norm_split:
+        for df in self.data_manager.data_norm_split.values():
             df.plot(ax=ax,
                     x='x',
                     y=series_name)
@@ -64,10 +64,35 @@ class PlottingManager:
         legend.remove()
 
         plt.xlabel('Time')
-        plt.ylabel(f'{series_name} : Value (normalized)')
+        plt.ylabel(f'Series: {series_name}: Value (normalized)')
         plt.xlim((self.date_min, self.date_max))
         plt.ylim((0, (1 + self.y_top_margin) *
                  self.data_manager.data_norm[series_name].max()))
+
+        plt.tight_layout()
+        plt.show()
+
+    def plot_all_series_for_window(self,
+                                   window_start: str) -> None:
+        plt.clf()
+
+        fig, ax = plt.subplots()
+
+        df = self.data_manager.data_norm_split[window_start]
+
+        for series in df.columns[1:]:
+            df.plot(ax=ax,
+                    x='x',
+                    y=series)
+
+        legend = ax.get_legend()
+        legend.remove()
+
+        plt.xlabel('Time')
+        plt.ylabel(f'Window Start: {window_start}: Value (normalized)')
+        plt.xlim((df['x'].min(), df['x'].max()))
+        plt.ylim((0, (1 + self.y_top_margin) *
+                 df[df.columns[1:]].max().max()))
 
         plt.tight_layout()
         plt.show()
