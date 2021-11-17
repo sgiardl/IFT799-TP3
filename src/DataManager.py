@@ -36,8 +36,8 @@ class DataManager:
 
         self.data_norm = self.normalize(self.data, norm_method)
 
-        self.data_split = self.split(self.data, window_size, jump_size)
-        self.data_split_norm = self.split(self.data_norm, window_size, jump_size)
+        # self.data_split = self.split(self.data, window_size, jump_size)
+        self.data_norm_split = self.split(self.data_norm, window_size, jump_size)
 
     @staticmethod
     def filter(df: pd.DataFrame,
