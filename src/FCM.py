@@ -30,17 +30,17 @@ class FCM:
         self.metric = metric
         self.seed = seed
 
-        self.fcm_results_all = {}
+        self.results = {}
 
     def run_fcm(self,
                 window_start: str,
                 window: pd.DataFrame) -> None:
         data = self.process_data(window)
 
-        fcm_results = {'cntr': {}, 'u': {}, 'u0': {}, 'd': {},
-                       'jm': {}, 'p': {}, 'fpc': {},
-                       'membership': {}, 'silhouette': {},
-                       'c_optimal': None}
+        results = {'cntr': {}, 'u': {}, 'u0': {}, 'd': {},
+                   'jm': {}, 'p': {}, 'fpc': {},
+                   'membership': {}, 'silhouette': {},
+                   'c_optimal': None}
 
         for c in range(self.c_min, self.c_max + 1):
             cntr, u, u0, d, jm, p, fpc = cmeans(data=data,
@@ -52,21 +52,21 @@ class FCM:
                                                 init=None,
                                                 seed=self.seed)
 
-            fcm_results['cntr'][f'{c=}'] = cntr
-            fcm_results['u'][f'{c=}'] = u
-            fcm_results['u0'][f'{c=}'] = u0
-            fcm_results['d'][f'{c=}'] = d
-            fcm_results['jm'][f'{c=}'] = jm
-            fcm_results['p'][f'{c=}'] = p
-            fcm_results['fpc'][f'{c=}'] = fpc
-            fcm_results['membership'][f'{c=}'] = np.argmax(u, axis=0)
-            fcm_results['silhouette'][f'{c=}'] = silhouette_score(data.T,
-                                                                  fcm_results['membership'][f'{c=}'],
-                                                                  metric=self.metric)
-            fcm_results['c_optimal'] = int(max(fcm_results['silhouette'],
-                                           key=fcm_results['silhouette'].get)[2:])
+            results['cntr'][f'{c=}'] = cntr
+            results['u'][f'{c=}'] = u
+            results['u0'][f'{c=}'] = u0
+            results['d'][f'{c=}'] = d
+            results['jm'][f'{c=}'] = jm
+            results['p'][f'{c=}'] = p
+            results['fpc'][f'{c=}'] = fpc
+            results['membership'][f'{c=}'] = np.argmax(u, axis=0)
+            results['silhouette'][f'{c=}'] = silhouette_score(data.T,
+                                                              results['membership'][f'{c=}'],
+                                                              metric=self.metric)
+            results['c_optimal'] = int(max(results['silhouette'],
+                                           key=results['silhouette'].get)[2:])
 
-        self.fcm_results_all[window_start] = fcm_results
+        self.results[window_start] = results
 
     @staticmethod
     def process_data(df: pd.DataFrame) -> np.array:
