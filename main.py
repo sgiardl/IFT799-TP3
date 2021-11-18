@@ -22,22 +22,32 @@ if __name__ == '__main__':
                                window_size=21,
                                jump_size=10)
 
-    # plotting_manager = PlottingManager(data_manager=data_manager)
-
-    # plotting_manager.plot_full_time_series()
-    # plotting_manager.plot_all_windows_for_series(series_name='FPX1')
-    # plotting_manager.plot_all_series_for_window(window_start='2008-04-03')
-
-    # fcm = FCM()
+    plotting_manager = PlottingManager()
     #
-    # for window_start, window in tqdm(data_manager.data_split_norm.items(),
-    #                                  desc='Calculating FCM...'):
-    #     fcm.run_fcm(window_start=window_start, window=window)
+    # plotting_manager.plot_full_time_series(data_manager=data_manager)
+    # plotting_manager.plot_all_windows_for_series(data_manager=data_manager,
+    #                                              series_name='FPX1')
+    # plotting_manager.plot_all_series_for_window(data_manager=data_manager,
+    #                                             window_start='2008-04-03')
 
     k_means = KMeans()
+    fcm = FCM()
 
     for window_start, window in tqdm(data_manager.data_split_norm.items(),
-                                     desc='Calculating K-Means...'):
+                                     desc='Finding optimal clusters...'):
         k_means.run_k_means(window_start=window_start, window=window)
+        fcm.run_fcm(window_start=window_start, window=window)
 
-    pass
+        plotting_manager.plot_clustering_results(method='K-Means',
+                                                 results=k_means.results_optimal[window_start],
+                                                 window_start=window_start,
+                                                 window=window,
+                                                 c=k_means.results_optimal[window_start].n_clusters)
+
+        plotting_manager.plot_clustering_results(method='FCM',
+                                                 results=fcm.results_optimal[window_start],
+                                                 window_start=window_start,
+                                                 window=window,
+                                                 c=fcm.results_optimal[window_start]['c'])
+
+        print('hi')

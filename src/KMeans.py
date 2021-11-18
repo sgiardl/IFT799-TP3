@@ -6,8 +6,6 @@ Olivier Lefebvre
 Simon Giard-Leroux
 """
 
-from math import ceil
-import matplotlib.pyplot as plt
 import pandas as pd
 
 from tslearn.utils import to_time_series_dataset
@@ -62,59 +60,3 @@ class KMeans:
         optimal_c = max(silhouette_dict, key=silhouette_dict.get)
 
         self.results_optimal[window_start] = self.results[window_start][optimal_c]
-
-        self.plot_results(window_start, window, self.results_optimal[window_start].n_clusters)
-
-    def plot_results(self,
-                     window_start: str,
-                     window: pd.DataFrame,
-                     c: int) -> None:
-        plt.clf()
-
-        results = self.results[window_start][f'c={c}']
-
-        n_rows = ceil(c ** (1 / 2))
-        n_cols = ceil(c / n_rows)
-
-        fig, axes = plt.subplots(n_rows, n_cols)
-
-        k = 0
-
-        for i, row in enumerate(axes):
-            if c > 2:
-                for j, col in enumerate(row):
-                    try:
-                        self.plot_cluster(axes[i, j], window, results, k)
-                        k += 1
-
-                    except IndexError:
-                        axes[i, j].set_axis_off()
-            else:
-                self.plot_cluster(axes[i], window, results, k)
-                k += 1
-
-        plt.suptitle(f'{window_start=}, n_clusters={c}, silhouette={results.silhouette:.4f}')
-
-        plt.tight_layout()
-
-        plt.show()
-
-
-    @staticmethod
-    def plot_cluster(ax,
-                     window: pd.DataFrame,
-                     results: TimeSeriesKMeans,
-                     cluster_n: int,
-                     color_members: str = 'blue',
-                     color_center: str = 'red') -> None:
-        for col, membership in zip(window.columns[1:], results.labels_):
-            if membership == cluster_n:
-                ax.plot(window[col].to_list(), color=color_members, alpha=0.3)
-
-        ax.plot(results.cluster_centers_[cluster_n, :, 0], color=color_center)
-
-        ax.set_title(f'Cluster {cluster_n + 1}')
-
-    # @staticmethod
-    # def process_data(df: pd.DataFrame) -> np.array:
-
