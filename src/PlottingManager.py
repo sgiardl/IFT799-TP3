@@ -20,7 +20,7 @@ class PlottingManager:
                  y_top_margin: float = 0.05) -> None:
         self.y_top_margin = y_top_margin
 
-    def plot_full_time_series(self,
+    def plot_full_time_series(self, *,
                               data_manager: DataManager) -> None:
         df_dict = {
             'Value (raw)': data_manager.data,
@@ -107,7 +107,7 @@ class PlottingManager:
         plt.tight_layout()
         plt.show()
 
-    def plot_clustering_results(self,
+    def plot_clustering_results(self, *,
                                 method: str,
                                 results: Union[dict, TimeSeriesKMeans],
                                 window_start: str,
@@ -126,13 +126,19 @@ class PlottingManager:
             if c > 2:
                 for j, col in enumerate(row):
                     try:
-                        self.plot_cluster(axes[i, j], window, results, k)
+                        self.plot_cluster(ax=axes[i, j],
+                                          window=window,
+                                          results=results,
+                                          cluster_n=k)
                         k += 1
 
                     except IndexError:
                         axes[i, j].set_axis_off()
             else:
-                self.plot_cluster(axes[i], window, results, k)
+                self.plot_cluster(ax=axes[i],
+                                  window=window,
+                                  results=results,
+                                  cluster_n=k)
                 k += 1
 
         if isinstance(results, dict):
@@ -146,7 +152,7 @@ class PlottingManager:
 
         plt.show()
 
-    def plot_cluster(self,
+    def plot_cluster(self, *,
                      ax,
                      window: pd.DataFrame,
                      results: Union[dict, TimeSeriesKMeans],
