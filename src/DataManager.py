@@ -6,8 +6,11 @@ Olivier Lefebvre
 Simon Giard-Leroux
 """
 
-import pandas as pd
 from math import ceil
+import numpy as np
+import pandas as pd
+
+pd.options.mode.chained_assignment = None
 
 
 class DataManager:
@@ -62,12 +65,13 @@ class DataManager:
         if norm_method == 'min-max':
             data = (data - data.min()) / (data.max() - data.min())
 
-        elif norm_method == 'z-score':
+        elif norm_method.startswith('z-score'):
             data = (data - data.mean()) / data.std()
 
-        elif norm_method == 'z-score-shifted':
-            data = (data - data.mean()) / data.std()
-            data += abs(data.min())
+            if norm_method == 'z-score-shifted':
+                data += abs(data.min())
+
+        data = data.fillna(0)
 
         return dates_col.join(data)
 

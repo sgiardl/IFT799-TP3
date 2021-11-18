@@ -39,7 +39,8 @@ class FCM:
 
         fcm_results = {'cntr': {}, 'u': {}, 'u0': {}, 'd': {},
                        'jm': {}, 'p': {}, 'fpc': {},
-                       'membership': {}, 'silhouette': {}}
+                       'membership': {}, 'silhouette': {},
+                       'c_optimal': None}
 
         for c in range(self.c_min, self.c_max + 1):
             cntr, u, u0, d, jm, p, fpc = cmeans(data=data,
@@ -62,6 +63,8 @@ class FCM:
             fcm_results['silhouette'][f'{c=}'] = silhouette_score(data.T,
                                                                   fcm_results['membership'][f'{c=}'],
                                                                   metric=self.metric)
+            fcm_results['c_optimal'] = int(max(fcm_results['silhouette'],
+                                           key=fcm_results['silhouette'].get)[2:])
 
         self.fcm_results_all[window_start] = fcm_results
 

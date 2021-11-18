@@ -29,7 +29,8 @@ if __name__ == '__main__':
 
     fcm = FCM()
 
-    for window_start, window in tqdm(data_manager.data_split_norm.items()):
+    for window_start, window in tqdm(data_manager.data_split_norm.items(),
+                                     desc='Calculating FCM...'):
         fcm.run_fcm(window_start=window_start, window=window)
 
     print('hi')
