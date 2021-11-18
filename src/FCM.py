@@ -7,6 +7,7 @@ Simon Giard-Leroux
 """
 
 from skfuzzy.cluster import cmeans
+from sklearn.metrics import silhouette_score
 import pandas as pd
 import numpy as np
 
@@ -37,7 +38,8 @@ class FCM:
         data = self.process_data(window)
 
         fcm_results = {'cntr': {}, 'u': {}, 'u0': {}, 'd': {},
-                       'jm': {}, 'p': {}, 'fpc': {}}
+                       'jm': {}, 'p': {}, 'fpc': {},
+                       'membership': {}, 'silhouette': {}}
 
         for c in range(self.c_min, self.c_max + 1):
             cntr, u, u0, d, jm, p, fpc = cmeans(data=data,
@@ -56,6 +58,10 @@ class FCM:
             fcm_results['jm'][f'{c=}'] = jm
             fcm_results['p'][f'{c=}'] = p
             fcm_results['fpc'][f'{c=}'] = fpc
+            fcm_results['membership'][f'{c=}'] = np.argmax(u, axis=0)
+            fcm_results['silhouette'][f'{c=}'] = silhouette_score(data.T,
+                                                                  fcm_results['membership'][f'{c=}'],
+                                                                  metric=self.metric)
 
         self.fcm_results_all[window_start] = fcm_results
 
