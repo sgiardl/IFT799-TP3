@@ -176,4 +176,4 @@ class PlottingManager:
         ax.set_ylim((0, (1 + self.y_top_margin) *
                     window[window.columns[1:]].max().max()))
 
-        ax.set_title(f'Cluster {cluster_n + 1}')
+        ax.set_title(f'c={cluster_n}, n_members={memberships.tolist().count(cluster_n)}')
