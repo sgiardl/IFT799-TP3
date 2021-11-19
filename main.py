@@ -44,7 +44,7 @@ if __name__ == '__main__':
                                                  results=k_means.results_optimal[window_start],
                                                  window_start=window_start,
                                                  window=window,
-                                                 c=k_means.results_optimal[window_start].n_clusters)
+                                                 c=k_means.results_optimal[window_start]['c'])
 
         plotting_manager.plot_clustering_results(method='FCM',
                                                  results=fcm.results_optimal[window_start],
@@ -56,6 +56,6 @@ if __name__ == '__main__':
                                                  results=dtw.results_optimal[window_start],
                                                  window_start=window_start,
                                                  window=window,
-                                                 c=dtw.results_optimal[window_start].n_clusters)
+                                                 c=dtw.results_optimal[window_start]['c'])
 
         print('hi')

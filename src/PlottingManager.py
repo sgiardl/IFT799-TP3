@@ -9,8 +9,6 @@ Simon Giard-Leroux
 from math import ceil
 import matplotlib.pyplot as plt
 import pandas as pd
-from tslearn.clustering import TimeSeriesKMeans
-from typing import Union
 
 from src.DataManager import DataManager
 
@@ -109,7 +107,7 @@ class PlottingManager:
 
     def plot_clustering_results(self, *,
                                 method: str,
-                                results: Union[dict, TimeSeriesKMeans],
+                                results: dict,
                                 window_start: str,
                                 window: pd.DataFrame,
                                 c: int) -> None:
@@ -141,12 +139,7 @@ class PlottingManager:
                                   cluster_n=k)
                 k += 1
 
-        if isinstance(results, dict):
-            silhouette = results['silhouette']
-        elif isinstance(results, TimeSeriesKMeans):
-            silhouette = results.silhouette
-
-        plt.suptitle(f'{method}: {window_start=}, n_clusters={c}, silhouette={silhouette:.4f}')
+        plt.suptitle(f'{method}: {window_start=}, n_clusters={c}, silhouette={results["silhouette"]:.4f}')
 
         plt.tight_layout()
 
@@ -155,16 +148,12 @@ class PlottingManager:
     def plot_cluster(self, *,
                      ax,
                      window: pd.DataFrame,
-                     results: Union[dict, TimeSeriesKMeans],
+                     results: dict,
                      cluster_n: int,
                      color_members: str = 'blue',
                      color_center: str = 'red') -> None:
-        if isinstance(results, dict):
-            memberships = results['memberships']
-            cluster_center = results['cntr'][cluster_n, :]
-        elif isinstance(results, TimeSeriesKMeans):
-            memberships = results.labels_
-            cluster_center = results.cluster_centers_[cluster_n, :, 0]
+        memberships = results['memberships']
+        cluster_center = results['cluster_centers'][cluster_n, :]
 
         for col, membership in zip(window.columns[1:], memberships):
             if membership == cluster_n:

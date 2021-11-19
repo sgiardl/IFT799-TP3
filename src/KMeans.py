@@ -6,8 +6,8 @@ Olivier Lefebvre
 Simon Giard-Leroux
 """
 
+from collections import Counter
 import pandas as pd
-
 from tslearn.utils import to_time_series_dataset
 from tslearn.clustering import TimeSeriesKMeans, silhouette_score
 
@@ -50,10 +50,23 @@ class KMeans:
                                   metric=self.metric,
                                   random_state=self.seed).fit(x)
 
-            km.silhouette = silhouette_score(x, km.labels_,
-                                             metric=self.metric)
-            results[f'{c=}'] = km
-            silhouette_dict[f'{c=}'] = km.silhouette
+            memberships = km.labels_
+
+            count = Counter(memberships.tolist())
+            largest_cluster = count.most_common(1)[0]
+
+            silhouette = silhouette_score(x,
+                                          memberships,
+                                          metric=self.metric)
+            silhouette_dict[f'{c=}'] = silhouette
+
+            results[f'{c=}'] = {'km': km,
+                                'c': c,
+                                'silhouette': silhouette,
+                                'cluster_centers': km.cluster_centers_.squeeze(),
+                                'memberships': memberships,
+                                'largest_cluster': largest_cluster[0],
+                                'largest_cluster_size': largest_cluster[1]}
 
         self.results[window_start] = results
 

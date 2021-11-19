@@ -6,6 +6,7 @@ Olivier Lefebvre
 Simon Giard-Leroux
 """
 
+from collections import Counter
 import numpy as np
 import pandas as pd
 from skfuzzy.cluster import cmeans
@@ -51,15 +52,25 @@ class FCM:
                                                 init=None,
                                                 seed=self.seed)
 
-            cm = {'c': c, 'cntr': cntr, 'u': u, 'u0': u0, 'd': d, 'jm': jm, 'p': p, 'fpc': fpc,
-                  'memberships': np.argmax(u, axis=0),
-                  'silhouette': silhouette_score(data.T,
-                                                 np.argmax(u, axis=0),
-                                                 metric=self.metric)}
+            cm = {'cntr': cntr, 'u': u, 'u0': u0, 'd': d, 'jm': jm, 'p': p, 'fpc': fpc}
 
-            silhouette_dict[f'{c=}'] = cm['silhouette']
+            memberships = np.argmax(u, axis=0)
 
-            results[f'{c=}'] = cm
+            count = Counter(memberships.tolist())
+            largest_cluster = count.most_common(1)[0]
+
+            silhouette = silhouette_score(data.T,
+                                          memberships,
+                                          metric=self.metric)
+            silhouette_dict[f'{c=}'] = silhouette
+
+            results[f'{c=}'] = {'cm': cm,
+                                'c': c,
+                                'silhouette': silhouette,
+                                'cluster_centers': cntr,
+                                'memberships': memberships,
+                                'largest_cluster': largest_cluster[0],
+                                'largest_cluster_size': largest_cluster[1]}
 
         self.results[window_start] = results
 
