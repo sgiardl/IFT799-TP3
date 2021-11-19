@@ -36,7 +36,7 @@ class FCM:
     def run_fcm(self,
                 window_start: str,
                 window: pd.DataFrame) -> None:
-        data = self.process_data(window)
+        data = window[window.columns[1:]].to_numpy()
 
         results = {}
         silhouette_dict = {}
@@ -66,13 +66,3 @@ class FCM:
         optimal_c = max(silhouette_dict, key=silhouette_dict.get)
 
         self.results_optimal[window_start] = self.results[window_start][optimal_c]
-
-    @staticmethod
-    def process_data(df: pd.DataFrame) -> np.array:
-        data = np.zeros((len(df), len(df.columns) - 1))
-
-        for i, (_, row) in enumerate(df.iterrows()):
-            for j, col in enumerate(df.columns[1:]):
-                data[i, j] = row[col]
-
-        return data
