@@ -11,24 +11,23 @@ import pandas as pd
 from tslearn.utils import to_time_series_dataset
 from tslearn.clustering import TimeSeriesKMeans, silhouette_score
 
+from src.ClusteringMethod import ClusteringMethod
 
-class KMeans:
-    def __init__(self,
-                 c_min: int = 2,
-                 c_max: int = 10,
+
+class KMeans(ClusteringMethod):
+    def __init__(self, *,
                  max_iter: int = 50,
                  tol: float = 1e-6,
+                 c_min: int = 2,
+                 c_max: int = 10,
                  metric: str = 'euclidean',
                  seed: int = 54288) -> None:
-        self.c_min = c_min
-        self.c_max = c_max
-        self.max_iter = max_iter
-        self.tol = tol
-        self.metric = metric
-        self.seed = seed
-
-        self.results = {}
-        self.results_optimal = {}
+        super().__init__(max_iter=max_iter,
+                         tol=tol,
+                         c_min=c_min,
+                         c_max=c_max,
+                         metric=metric,
+                         seed=seed)
 
     def run_k_means(self,
                     window_start: str,

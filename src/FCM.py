@@ -12,27 +12,26 @@ import pandas as pd
 from skfuzzy.cluster import cmeans
 from sklearn.metrics import silhouette_score
 
+from src.ClusteringMethod import ClusteringMethod
 
-class FCM:
-    def __init__(self,
+
+class FCM(ClusteringMethod):
+    def __init__(self, *,
+                 m: int = 2,
+                 max_iter: int = 1000,
+                 tol: float = 0.005,
                  c_min: int = 2,
                  c_max: int = 10,
-                 m: int = 2,
-                 error: float = 0.005,
-                 maxiter: int = 1000,
                  metric: str = 'euclidean',
                  seed: int = 54288) -> None:
+        super().__init__(max_iter=max_iter,
+                         tol=tol,
+                         c_min=c_min,
+                         c_max=c_max,
+                         metric=metric,
+                         seed=seed)
 
-        self.c_min = c_min
-        self.c_max = c_max
         self.m = m
-        self.error = error
-        self.maxiter = maxiter
-        self.metric = metric
-        self.seed = seed
-
-        self.results = {}
-        self.results_optimal = {}
 
     def run_fcm(self,
                 window_start: str,
@@ -46,8 +45,8 @@ class FCM:
             cntr, u, u0, d, jm, p, fpc = cmeans(data=data,
                                                 c=c,
                                                 m=self.m,
-                                                error=self.error,
-                                                maxiter=self.maxiter,
+                                                error=self.tol,
+                                                maxiter=self.max_iter,
                                                 metric=self.metric,
                                                 init=None,
                                                 seed=self.seed)

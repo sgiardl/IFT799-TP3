@@ -168,28 +168,21 @@ class PlottingManager:
         ax.set_title(f'c={cluster_n}, n_members={memberships.tolist().count(cluster_n)}')
 
     def plot_largest_cluster(self, *,
-                             results_optimal: dict) -> None:
+                             df: pd.DataFrame) -> None:
         plt.clf()
 
-        largest_cluster_data = {}
-
-        for date, results_dict in results_optimal.items():
-            largest_cluster_data[date] = results_dict['largest_cluster_size']
-
-        x, y = zip(*sorted(largest_cluster_data.items()))
-        x = pd.to_datetime(x)
-
-        plt.plot(x, y)
+        plt.plot(df['window_start'], df['largest_cluster_size'])
 
         plt.xlabel('Time')
         plt.ylabel('Largest Cluster Size')
-        plt.xlim((x.min(), x.max()))
-        plt.ylim((min(y), (1 + self.y_top_margin) * max(y)))
+        plt.xlim((df['window_start'].min(), df['window_start'].max()))
+        plt.ylim((df['largest_cluster_size'].min(),
+                  (1 + self.y_top_margin) * df['largest_cluster_size'].max()))
 
         plt.tight_layout()
         plt.show()
 
-        print('hi')
+
 
 
 
