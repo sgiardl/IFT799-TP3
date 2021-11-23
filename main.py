@@ -31,31 +31,31 @@ if __name__ == '__main__':
     #                                             window_start='2008-04-03')
 
     k_means = KMeans()
-    fcm = FCM()
-    dtw = KMeans(metric='dtw')
+    # fcm = FCM()
+    # dtw = KMeans(metric='dtw')
 
     for window_start, window in tqdm(data_manager.data_split_norm.items(),
                                      desc='Finding optimal clusters...'):
         k_means.run_k_means(window_start=window_start, window=window)
-        fcm.run_fcm(window_start=window_start, window=window)
-        dtw.run_k_means(window_start=window_start, window=window)
+        # fcm.run_fcm(window_start=window_start, window=window)
+        # dtw.run_k_means(window_start=window_start, window=window)
 
-        plotting_manager.plot_clustering_results(method='K-Means',
-                                                 results=k_means.results_optimal[window_start],
-                                                 window_start=window_start,
-                                                 window=window,
-                                                 c=k_means.results_optimal[window_start]['c'])
+        # plotting_manager.plot_clustering_results(method='K-Means',
+        #                                          results=k_means.results_optimal[window_start],
+        #                                          window_start=window_start,
+        #                                          window=window,
+        #                                          c=k_means.results_optimal[window_start]['c'])
 
-        plotting_manager.plot_clustering_results(method='FCM',
-                                                 results=fcm.results_optimal[window_start],
-                                                 window_start=window_start,
-                                                 window=window,
-                                                 c=fcm.results_optimal[window_start]['c'])
+        # plotting_manager.plot_clustering_results(method='FCM',
+        #                                          results=fcm.results_optimal[window_start],
+        #                                          window_start=window_start,
+        #                                          window=window,
+        #                                          c=fcm.results_optimal[window_start]['c'])
+        #
+        # plotting_manager.plot_clustering_results(method='DTW',
+        #                                          results=dtw.results_optimal[window_start],
+        #                                          window_start=window_start,
+        #                                          window=window,
+        #                                          c=dtw.results_optimal[window_start]['c'])
 
-        plotting_manager.plot_clustering_results(method='DTW',
-                                                 results=dtw.results_optimal[window_start],
-                                                 window_start=window_start,
-                                                 window=window,
-                                                 c=dtw.results_optimal[window_start]['c'])
-
-        print('hi')
+    plotting_manager.plot_largest_cluster(results_optimal=k_means.results_optimal)

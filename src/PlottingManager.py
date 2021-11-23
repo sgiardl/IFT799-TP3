@@ -166,3 +166,39 @@ class PlottingManager:
                     window[window.columns[1:]].max().max()))
 
         ax.set_title(f'c={cluster_n}, n_members={memberships.tolist().count(cluster_n)}')
+
+    def plot_largest_cluster(self, *,
+                             results_optimal: dict) -> None:
+        plt.clf()
+
+        largest_cluster_data = {}
+
+        for date, results_dict in results_optimal.items():
+            largest_cluster_data[date] = results_dict['largest_cluster_size']
+
+        x, y = zip(*sorted(largest_cluster_data.items()))
+        x = pd.to_datetime(x)
+
+        plt.plot(x, y)
+
+        plt.xlabel('Time')
+        plt.ylabel('Largest Cluster Size')
+        plt.xlim((x.min(), x.max()))
+        plt.ylim((min(y), (1 + self.y_top_margin) * max(y)))
+
+        plt.tight_layout()
+        plt.show()
+
+        print('hi')
+
+
+
+
+
+
+
+
+
+
+
+
