@@ -33,9 +33,9 @@ class FCM(ClusteringMethod):
 
         self.m = m
 
-    def run_fcm(self,
-                window_start: str,
-                window: pd.DataFrame) -> None:
+    def __call__(self,
+                 window_start: str,
+                 window: pd.DataFrame) -> None:
         data = window[window.columns[1:]].to_numpy()
 
         results = {}

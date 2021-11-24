@@ -29,9 +29,9 @@ class KMeans(ClusteringMethod):
                          metric=metric,
                          seed=seed)
 
-    def run_k_means(self,
-                    window_start: str,
-                    window: pd.DataFrame) -> None:
+    def __call__(self,
+                 window_start: str,
+                 window: pd.DataFrame) -> None:
         series_list = []
 
         for col in window.columns[1:]:

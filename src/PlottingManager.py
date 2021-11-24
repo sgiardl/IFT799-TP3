@@ -16,7 +16,7 @@ from src.DataManager import DataManager
 class PlottingManager:
     def __init__(self, *,
                  y_top_margin: float = 0.05) -> None:
-        self.y_top_margin = y_top_margin
+        self.y_margin = y_top_margin
 
     def plot_full_time_series(self, *,
                               data_manager: DataManager) -> None:
@@ -41,7 +41,7 @@ class PlottingManager:
                 xlabel='Time',
                 ylabel=xlabel,
                 xlim=(date_min, date_max),
-                ylim=(0, (1 + self.y_top_margin) * df[df.columns[1:]].max().max()),
+                ylim=(0, (1 + self.y_margin) * df[df.columns[1:]].max().max()),
                 legend=False,
                 fontsize=9)
 
@@ -74,7 +74,7 @@ class PlottingManager:
         plt.xlabel('Time')
         plt.ylabel(f'Series: {series_name}, Value (normalized)')
         plt.xlim((date_min, date_max))
-        plt.ylim((0, (1 + self.y_top_margin) * val_max))
+        plt.ylim((0, (1 + self.y_margin) * val_max))
 
         plt.tight_layout()
         plt.show()
@@ -99,8 +99,8 @@ class PlottingManager:
         plt.xlabel('Time')
         plt.ylabel(f'Window Start: {window_start}, Value (normalized)')
         plt.xlim((df['x'].min(), df['x'].max()))
-        plt.ylim((0, (1 + self.y_top_margin) *
-                 df[df.columns[1:]].max().max()))
+        plt.ylim((0, (1 + self.y_margin) *
+                  df[df.columns[1:]].max().max()))
 
         plt.tight_layout()
         plt.show()
@@ -162,22 +162,44 @@ class PlottingManager:
         ax.plot(cluster_center, color=color_center)
 
         ax.set_xlim((0, len(window) - 1))
-        ax.set_ylim((0, (1 + self.y_top_margin) *
-                    window[window.columns[1:]].max().max()))
+        ax.set_ylim((0, (1 + self.y_margin) *
+                     window[window.columns[1:]].max().max()))
 
         ax.set_title(f'c={cluster_n}, n_members={memberships.tolist().count(cluster_n)}')
 
-    def plot_largest_cluster(self, *,
-                             df: pd.DataFrame) -> None:
+    def plot_largest_cluster_curve(self, *,
+                                   method: str,
+                                   df: pd.DataFrame) -> None:
         plt.clf()
 
         plt.plot(df['window_start'], df['largest_cluster_size'])
 
+        plt.title(method)
         plt.xlabel('Time')
         plt.ylabel('Largest Cluster Size')
         plt.xlim((df['window_start'].min(), df['window_start'].max()))
         plt.ylim((df['largest_cluster_size'].min(),
-                  (1 + self.y_top_margin) * df['largest_cluster_size'].max()))
+                  (1 + self.y_margin) * df['largest_cluster_size'].max()))
+
+        plt.tight_layout()
+        plt.show()
+
+    def plot_rand_curve(self, *,
+                        method: str,
+                        df: pd.DataFrame) -> None:
+        plt.clf()
+
+        plt.plot(df['window_start'], df['rand_score'], label='rand_score')
+        plt.plot(df['window_start'], df['adjusted_rand_score'], label='adjusted_rand_score')
+
+        plt.title(method)
+        plt.xlabel('Time')
+        plt.ylabel('Rand Score')
+        plt.xlim((df['window_start'].min(), df['window_start'].max()))
+        ymin = df[df.columns[1:]].min().min()
+        plt.ylim(((1 - self.y_margin) * ymin if ymin > 0 else (1 + self.y_margin) * ymin,
+                  (1 + self.y_margin) * df[df.columns[1:]].max().max()))
+        plt.legend()
 
         plt.tight_layout()
         plt.show()

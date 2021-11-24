@@ -14,6 +14,8 @@ from src.FCM import FCM
 from src.KMeans import KMeans
 
 if __name__ == '__main__':
+    plot_clusters = False
+
     data_manager = DataManager(file_path='data/res_2000.csv',
                                date_start='2006-01-01',
                                series_length=1260,
@@ -23,42 +25,35 @@ if __name__ == '__main__':
                                jump_size=10)
 
     plotting_manager = PlottingManager()
-    #
-    # plotting_manager.plot_full_time_series(data_manager=data_manager)
-    # plotting_manager.plot_all_windows_for_series(data_manager=data_manager,
-    #                                              series_name='FPX1')
-    # plotting_manager.plot_all_series_for_window(data_manager=data_manager,
-    #                                             window_start='2008-04-03')
 
-    k_means = KMeans()
-    fcm = FCM()
-    dtw = KMeans(metric='dtw')
+    plotting_manager.plot_full_time_series(data_manager=data_manager)
+    plotting_manager.plot_all_windows_for_series(data_manager=data_manager,
+                                                 series_name='FPX1')
+    plotting_manager.plot_all_series_for_window(data_manager=data_manager,
+                                                window_start='2008-04-03')
+
+    clustering_methods = {
+        'K-Means': KMeans(),
+        'FCM': FCM(),
+        'DTW': KMeans(metric='dtw')
+    }
 
     for window_start, window in tqdm(data_manager.data_split_norm.items(),
                                      desc='Finding optimal clusters...'):
-        k_means.run_k_means(window_start=window_start, window=window)
-        fcm.run_fcm(window_start=window_start, window=window)
-        dtw.run_k_means(window_start=window_start, window=window)
+        for name, method in clustering_methods.items():
+            method(window_start=window_start, window=window)
 
-        plotting_manager.plot_clustering_results(method='K-Means',
-                                                 results=k_means.results_optimal[window_start],
-                                                 window_start=window_start,
-                                                 window=window,
-                                                 c=k_means.results_optimal[window_start]['c'])
+            if plot_clusters:
+                plotting_manager.plot_clustering_results(method=name,
+                                                         results=method.results_optimal[window_start],
+                                                         window_start=window_start,
+                                                         window=window,
+                                                         c=method.results_optimal[window_start]['c'])
 
-        plotting_manager.plot_clustering_results(method='FCM',
-                                                 results=fcm.results_optimal[window_start],
-                                                 window_start=window_start,
-                                                 window=window,
-                                                 c=fcm.results_optimal[window_start]['c'])
+    for name, method in clustering_methods.items():
+        method.analyze_results()
 
-        plotting_manager.plot_clustering_results(method='DTW',
-                                                 results=dtw.results_optimal[window_start],
-                                                 window_start=window_start,
-                                                 window=window,
-                                                 c=dtw.results_optimal[window_start]['c'])
-
-        print('hi')
-
-    k_means.get_largest_cluster_curve()
-    plotting_manager.plot_largest_cluster(df=k_means.largest_cluster_curve)
+        plotting_manager.plot_largest_cluster_curve(method=name,
+                                                    df=method.largest_cluster_curve)
+        plotting_manager.plot_rand_curve(method=name,
+                                         df=method.rand_curve)
