@@ -203,17 +203,3 @@ class PlottingManager:
 
         plt.tight_layout()
         plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-

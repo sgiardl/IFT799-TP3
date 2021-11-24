@@ -38,9 +38,9 @@ if __name__ == '__main__':
         'DTW': KMeans(metric='dtw')
     }
 
-    for window_start, window in tqdm(data_manager.data_split_norm.items(),
-                                     desc='Finding optimal clusters...'):
-        for name, method in clustering_methods.items():
+    for name, method in clustering_methods.items():
+        for window_start, window in tqdm(data_manager.data_split_norm.items(),
+                                         desc=f'{name}: Finding optimal clusters...'):
             method(window_start=window_start, window=window)
 
             if plot_clusters:
@@ -50,7 +50,6 @@ if __name__ == '__main__':
                                                          window=window,
                                                          c=method.results_optimal[window_start]['c'])
 
-    for name, method in clustering_methods.items():
         method.analyze_results()
 
         plotting_manager.plot_largest_cluster_curve(method=name,
