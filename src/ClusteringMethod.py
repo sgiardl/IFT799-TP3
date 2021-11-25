@@ -32,7 +32,9 @@ class ClusteringMethod(ABC):
         self.rand_curve = None
 
     @abstractmethod
-    def __call__(self) -> None:
+    def __call__(self,
+                 window_start: str,
+                 window: pd.DataFrame) -> None:
         return
 
     def analyze_results(self) -> None:
