@@ -80,8 +80,9 @@ class DataManager:
               jump_size: int) -> pd.DataFrame:
         data_dict = {}
 
-        for i in range(ceil(len(df) / jump_size)):
-            index = i * jump_size
+        for i in range(0, len(df) - window_size, jump_size):  # Pour avoir des windows complètes
+        # for i in range(ceil(len(df) / jump_size)):
+            index = i  # * jump_size
             data_dict[df.iloc[index]['x'].strftime('%Y-%m-%d')] = \
                 df[index: index + window_size]
 
