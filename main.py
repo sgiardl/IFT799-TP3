@@ -6,6 +6,7 @@ Olivier Lefebvre
 Simon Giard-Leroux
 """
 
+import pandas as pd
 from tqdm import tqdm
 
 from src.DataManager import DataManager
@@ -17,20 +18,23 @@ if __name__ == '__main__':
     plot_clusters = False
 
     data_manager = DataManager(file_path='data/res_2000.csv',
-                               date_start='2006-01-01',
-                               series_length=1260,
-                               n_series=100,
+                               date_start='2000-12-29',
+                               series_length=5221,
+                               n_series=287,
+                               # date_start='2006-01-01',
+                               # series_length=1260,
+                               # n_series=100,
                                norm_method='z-score-shifted',
                                window_size=21,
                                jump_size=10)
 
     plotting_manager = PlottingManager()
 
-    plotting_manager.plot_full_time_series(data_manager=data_manager)
-    plotting_manager.plot_all_windows_for_series(data_manager=data_manager,
-                                                 series_name='FPX1')
-    plotting_manager.plot_all_series_for_window(data_manager=data_manager,
-                                                window_start='2008-04-03')
+    # plotting_manager.plot_full_time_series(data_manager=data_manager)
+    # plotting_manager.plot_all_windows_for_series(data_manager=data_manager,
+    #                                              series_name='FPX1')
+    # plotting_manager.plot_all_series_for_window(data_manager=data_manager,
+    #                                             window_start='2008-04-03')
 
     clustering_methods = {
         'K-Means': KMeans(),
@@ -56,3 +60,6 @@ if __name__ == '__main__':
                                                     df=method.largest_cluster_curve)
         plotting_manager.plot_rand_curve(method=name,
                                          df=method.rand_curve)
+
+        method.largest_cluster_curve.to_csv(f'results/largest_cluster_{name}.csv', index=False)
+        method.rand_curve.to_csv(f'results/rand_{name}.csv', index=False)
