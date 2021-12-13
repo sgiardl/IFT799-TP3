@@ -7,6 +7,7 @@ Simon Giard-Leroux
 """
 
 from math import ceil
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -186,19 +187,29 @@ class PlottingManager:
 
     def plot_rand_curve(self, *,
                         method: str,
-                        df: pd.DataFrame) -> None:
+                        df: pd.DataFrame,
+                        year_start: int = 2000,
+                        year_end: int = 2021) -> None:
         plt.clf()
+
+        fig, ax = plt.subplots()
+
+        df = df[(df['window_start'] > f'{year_start}-01-01') &
+                (df['window_start'] < f'{year_end}-12-31')]
+
+        df['window_start'] = pd.to_datetime(df['window_start'])
 
         plt.plot(df['window_start'], df['rand_score'], label='rand_score')
         plt.plot(df['window_start'], df['adjusted_rand_score'], label='adjusted_rand_score')
 
+        ax.xaxis.set_tick_params(reset=True)
+        ax.xaxis.set_major_locator(mdates.YearLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+
         plt.title(method)
         plt.xlabel('Time')
-        plt.ylabel('Rand Score')
-        plt.xlim((df['window_start'].min(), df['window_start'].max()))
-        ymin = df[df.columns[1:]].min().min()
-        plt.ylim(((1 - self.y_margin) * ymin if ymin > 0 else (1 + self.y_margin) * ymin,
-                  (1 + self.y_margin) * df[df.columns[1:]].max().max()))
+        plt.ylabel('Score')
+        plt.xticks(rotation=45, ha="right")
         plt.legend()
 
         plt.tight_layout()
