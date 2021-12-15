@@ -6,7 +6,6 @@ Olivier Lefebvre
 Simon Giard-Leroux
 """
 
-from math import ceil
 import pandas as pd
 
 pd.options.mode.chained_assignment = None
@@ -82,10 +81,5 @@ class DataManager:
 
         for i in range(0, len(df) - window_size, jump_size):
             data_dict[df.iloc[i]['x'].strftime('%Y-%m-%d')] = df[i: i + window_size]
-
-        # for i in range(ceil(len(df) / jump_size)):
-        #     index = i * jump_size
-        #     data_dict[df.iloc[index]['x'].strftime('%Y-%m-%d')] = \
-        #         df[index: index + window_size]
 
         return data_dict
