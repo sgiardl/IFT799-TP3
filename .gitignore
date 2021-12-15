@@ -1,3 +1,6 @@
 .idea
 .git
 __pycache__/
+results/
+data/
+scratch.py
